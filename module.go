@@ -17,7 +17,7 @@ var (
 	module = &Module{
 		configs:   make(map[string]Config, 0),
 		drivers:   make(map[string]Driver, 0),
-		instances: make(map[string]Instance, 0),
+		instances: make(map[string]*Instance, 0),
 	}
 )
 
@@ -30,7 +30,7 @@ type (
 		configs map[string]Config
 
 		drivers   map[string]Driver
-		instances map[string]Instance
+		instances map[string]*Instance
 
 		weights  map[string]int
 		hashring *util.HashRing
@@ -45,8 +45,8 @@ type (
 		Setting Map
 	}
 	Instance struct {
-		name    string
-		config  Config
+		Name    string
+		Config  Config
 		connect Connect
 	}
 )

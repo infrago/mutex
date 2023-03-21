@@ -10,13 +10,13 @@ func (this *Module) Lock(key string, expiries ...time.Duration) error {
 
 	if inst, ok := this.instances[locate]; ok {
 
-		expiry := inst.config.Expiry
+		expiry := inst.Config.Expiry
 		if len(expiries) > 0 {
 			expiry = expiries[0]
 		}
 
 		// 加上前缀
-		key := inst.config.Prefix + key
+		key := inst.Config.Prefix + key
 
 		return inst.connect.Lock(key, expiry)
 	}
@@ -29,13 +29,13 @@ func (this *Module) LockTo(conn string, key string, expiries ...time.Duration) e
 	if inst, ok := this.instances[conn]; ok {
 
 		//默认过期时间
-		expiry := inst.config.Expiry
+		expiry := inst.Config.Expiry
 		if len(expiries) > 0 {
 			expiry = expiries[0]
 		}
 
 		// 加上前缀
-		key := inst.config.Prefix + key
+		key := inst.Config.Prefix + key
 
 		return inst.connect.Lock(key, expiry)
 	}
@@ -48,7 +48,7 @@ func (this *Module) Unlock(key string) error {
 	locate := this.hashring.Locate(key)
 
 	if inst, ok := this.instances[locate]; ok {
-		key := inst.config.Prefix + key //加上前缀
+		key := inst.Config.Prefix + key //加上前缀
 		return inst.connect.Unlock(key)
 	}
 
@@ -58,7 +58,7 @@ func (this *Module) Unlock(key string) error {
 // UnlockFrom 从指定的连接解锁
 func (this *Module) UnlockFrom(locate string, key string) error {
 	if inst, ok := this.instances[locate]; ok {
-		key := inst.config.Prefix + key //加上前缀
+		key := inst.Config.Prefix + key //加上前缀
 		return inst.connect.Unlock(key)
 	}
 

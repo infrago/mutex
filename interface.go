@@ -128,8 +128,12 @@ func (this *Module) Connect() {
 			panic("Invalid mutex driver: " + config.Driver)
 		}
 
+		inst := &Instance{
+			name, config, nil,
+		}
+
 		// 建立连接
-		connect, err := driver.Connect(name, config)
+		connect, err := driver.Connect(inst)
 		if err != nil {
 			panic("Failed to connect to mutex: " + err.Error())
 		}
@@ -140,10 +144,10 @@ func (this *Module) Connect() {
 			panic("Failed to open mutex connect: " + err.Error())
 		}
 
+		inst.connect = connect
+
 		//保存实例
-		this.instances[name] = Instance{
-			name, config, connect,
-		}
+		this.instances[name] = inst
 
 		//只有设置了权重的才参与分布
 		if config.Weight > 0 {
