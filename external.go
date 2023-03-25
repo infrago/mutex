@@ -12,6 +12,8 @@ func makeKey(args []string) string {
 	return strings.Join(args, "-")
 }
 
+mutex.Key()
+
 func Lock(args ...Any) error {
 	keys := []string{}
 	exps := []time.Duration{}
