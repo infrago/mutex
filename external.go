@@ -8,6 +8,12 @@ import (
 	. "github.com/infrago/base"
 )
 
+type (
+	locker struct {
+		conn, key string
+	}
+)
+
 func Key(args ...Any) string {
 	keys := []string{}
 	for _, arg := range args {
@@ -17,7 +23,7 @@ func Key(args ...Any) string {
 	return strings.Join(keys, "-")
 }
 
-func LockOn(conn string, args ...Any) error {
+func LockOn(conn string, args ...Any) (*locker, error) {
 	keys := []Any{}
 	exps := []time.Duration{}
 
@@ -30,7 +36,12 @@ func LockOn(conn string, args ...Any) error {
 	}
 
 	key := Key(keys...)
-	return module.LockOn(conn, key, exps...)
+	err := module.LockOn(conn, key, exps...)
+	if err != nil {
+		return nil, err
+	}
+
+	return &locker{conn, key}, nil
 }
 func UnlockOn(conn string, args ...Any) error {
 	key := Key(args...)
@@ -38,15 +49,22 @@ func UnlockOn(conn string, args ...Any) error {
 }
 
 func LockedOn(conn string, args ...Any) bool {
-	return LockOn(conn, args...) != nil
+	_, err := LockOn(conn, args...)
+	return err != nil
 }
 
-func Lock(args ...Any) error {
+func Lock(args ...Any) (*locker, error) {
 	return LockOn("", args...)
 }
 func Unlock(args ...Any) error {
 	return UnlockOn("", args...)
 }
 func Locked(args ...Any) bool {
-	return Lock(args...) != nil
+	_, err := Lock(args...)
+	return err != nil
+}
+
+// 解锁方法
+func (this *locker) Unlock() error {
+	return UnlockOn(this.conn, this.key)
 }
