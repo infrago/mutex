@@ -44,11 +44,6 @@ type (
 		Expiry  time.Duration
 		Setting Map
 	}
-	Instance struct {
-		Name    string
-		Config  Config
-		connect Connect
-	}
 )
 
 // Driver 注册驱动

@@ -131,7 +131,7 @@ func (this *Module) Connect() {
 		}
 
 		inst := &Instance{
-			name, config, nil,
+			nil, name, config, config.Setting,
 		}
 
 		// 建立连接
