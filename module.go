@@ -41,7 +41,7 @@ type (
 		Driver  string
 		Weight  int
 		Prefix  string
-		Expiry  time.Duration
+		Expire  time.Duration
 		Setting Map
 	}
 )

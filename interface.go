@@ -23,7 +23,7 @@ func (this *Module) Register(name string, value Any) {
 
 func (this *Module) configure(name string, config Map) {
 	cfg := Config{
-		Driver: DEFAULT, Weight: 1, Expiry: time.Second,
+		Driver: DEFAULT, Weight: 1, Expire: time.Second,
 	}
 	//如果已经存在了，用现成的改写
 	if vv, ok := this.configs[name]; ok {
@@ -46,17 +46,17 @@ func (this *Module) configure(name string, config Map) {
 	}
 
 	//默认过期时间，单位秒
-	if expiry, ok := config["expiry"].(string); ok {
-		dur, err := util.ParseDuration(expiry)
+	if expire, ok := config["expire"].(string); ok {
+		dur, err := util.ParseDuration(expire)
 		if err == nil {
-			cfg.Expiry = dur
+			cfg.Expire = dur
 		}
 	}
-	if expiry, ok := config["expiry"].(int); ok {
-		cfg.Expiry = time.Second * time.Duration(expiry)
+	if expire, ok := config["expire"].(int); ok {
+		cfg.Expire = time.Second * time.Duration(expire)
 	}
-	if expiry, ok := config["expiry"].(float64); ok {
-		cfg.Expiry = time.Second * time.Duration(expiry)
+	if expire, ok := config["expire"].(float64); ok {
+		cfg.Expire = time.Second * time.Duration(expire)
 	}
 
 	if setting, ok := config["setting"].(Map); ok {
@@ -98,7 +98,7 @@ func (this *Module) Initialize() {
 	// 如果没有配置任何连接时，默认一个
 	if len(this.configs) == 0 {
 		this.configs[infra.DEFAULT] = Config{
-			Driver: infra.DEFAULT, Weight: 1, Expiry: time.Second,
+			Driver: infra.DEFAULT, Weight: 1, Expire: time.Second,
 		}
 	} else {
 		//session全部分布，不留单独外部连接
@@ -106,8 +106,8 @@ func (this *Module) Initialize() {
 			if config.Weight == 0 {
 				config.Weight = 1
 			}
-			if config.Expiry == 0 {
-				config.Expiry = time.Second
+			if config.Expire == 0 {
+				config.Expire = time.Second
 			}
 			this.configs[key] = config
 		}
