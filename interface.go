@@ -146,6 +146,7 @@ func (this *Module) Connect() {
 			panic("Failed to open mutex connect: " + err.Error())
 		}
 
+		//保存连接
 		inst.connect = connect
 
 		//保存实例

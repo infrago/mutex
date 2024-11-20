@@ -1,12 +1,14 @@
 package mutex
 
-import "time"
+import (
+	"time"
+)
 
 // . "github.com/infrago/base"
 
 // Lock 加锁
 func (this *Module) getInst(conn, key string) (*Instance, error) {
-	if conn != "" {
+	if conn == "" {
 		conn = this.hashring.Locate(key)
 	}
 
