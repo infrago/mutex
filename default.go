@@ -4,8 +4,6 @@ import (
 	"errors"
 	"sync"
 	"time"
-
-	"github.com/bamgoo/bamgoo"
 )
 
 type defaultDriver struct{}
@@ -14,10 +12,6 @@ type defaultConnect struct {
 	mutex    sync.Mutex
 	instance *Instance
 	locks    map[string]time.Time
-}
-
-func init() {
-	bamgoo.Register(bamgoo.DEFAULT, &defaultDriver{})
 }
 
 func (d *defaultDriver) Connect(inst *Instance) (Connection, error) {

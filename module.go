@@ -10,6 +10,7 @@ import (
 
 func init() {
 	bamgoo.Mount(module)
+	bamgoo.Register(bamgoo.DEFAULT, &defaultDriver{})
 }
 
 var module = &Module{
@@ -34,10 +35,10 @@ type (
 	}
 
 	Config struct {
-		Driver string
-		Weight int
-		Prefix string
-		Expire time.Duration
+		Driver  string
+		Weight  int
+		Prefix  string
+		Expire  time.Duration
 		Setting base.Map
 	}
 
