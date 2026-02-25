@@ -1,6 +1,7 @@
 package mutex
 
 import (
+	"fmt"
 	"sync"
 	"time"
 
@@ -254,6 +255,7 @@ func (m *Module) Start() {
 		return
 	}
 	m.started = true
+	fmt.Printf("bamgoo mutex module is running with %d connections.\n", len(m.instances))
 }
 
 // Stop stops module (no-op).
