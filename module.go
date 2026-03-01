@@ -5,13 +5,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/bamgoo/bamgoo"
-	base "github.com/bamgoo/base"
+	"github.com/infrago/infra"
+	base "github.com/infrago/base"
 )
 
 func init() {
-	bamgoo.Mount(module)
-	bamgoo.Register(bamgoo.DEFAULT, &defaultDriver{})
+	infra.Mount(module)
+	infra.Register(infra.DEFAULT, &defaultDriver{})
 }
 
 var module = &Module{
@@ -64,7 +64,7 @@ func (m *Module) RegisterDriver(name string, driver Driver) {
 	defer m.mutex.Unlock()
 
 	if name == "" {
-		name = bamgoo.DEFAULT
+		name = infra.DEFAULT
 	}
 	if driver == nil {
 		panic("Invalid mutex driver: " + name)
@@ -85,7 +85,7 @@ func (m *Module) RegisterConfig(name string, cfg Config) {
 	}
 
 	if name == "" {
-		name = bamgoo.DEFAULT
+		name = infra.DEFAULT
 	}
 	if _, ok := m.configs[name]; ok {
 		panic("Mutex config already registered: " + name)
@@ -104,7 +104,7 @@ func (m *Module) RegisterConfigs(configs Configs) {
 
 	for name, cfg := range configs {
 		if name == "" {
-			name = bamgoo.DEFAULT
+			name = infra.DEFAULT
 		}
 		if _, ok := m.configs[name]; ok {
 			panic("Mutex config already registered: " + name)
@@ -140,12 +140,12 @@ func (m *Module) Config(global base.Map) {
 		}
 	}
 	if len(rootConfig) > 0 {
-		m.configure(bamgoo.DEFAULT, rootConfig)
+		m.configure(infra.DEFAULT, rootConfig)
 	}
 }
 
 func (m *Module) configure(name string, conf base.Map) {
-	cfg := Config{Driver: bamgoo.DEFAULT, Weight: 1, Expire: time.Second}
+	cfg := Config{Driver: infra.DEFAULT, Weight: 1, Expire: time.Second}
 	if existing, ok := m.configs[name]; ok {
 		cfg = existing
 	}
@@ -187,15 +187,15 @@ func (m *Module) Setup() {
 	}
 
 	if len(m.configs) == 0 {
-		m.configs[bamgoo.DEFAULT] = Config{Driver: bamgoo.DEFAULT, Weight: 1, Expire: time.Second}
+		m.configs[infra.DEFAULT] = Config{Driver: infra.DEFAULT, Weight: 1, Expire: time.Second}
 	}
 
 	for name, cfg := range m.configs {
 		if name == "" {
-			name = bamgoo.DEFAULT
+			name = infra.DEFAULT
 		}
 		if cfg.Driver == "" {
-			cfg.Driver = bamgoo.DEFAULT
+			cfg.Driver = infra.DEFAULT
 		}
 		if cfg.Weight == 0 {
 			cfg.Weight = 1
@@ -255,7 +255,7 @@ func (m *Module) Start() {
 		return
 	}
 	m.started = true
-	fmt.Printf("bamgoo mutex module is running with %d connections.\n", len(m.instances))
+	fmt.Printf("infrago mutex module is running with %d connections.\n", len(m.instances))
 }
 
 // Stop stops module (no-op).

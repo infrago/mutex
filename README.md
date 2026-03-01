@@ -1,2 +1,2 @@
 # mutex
-bamgoo mutex module.
+infrago mutex module.

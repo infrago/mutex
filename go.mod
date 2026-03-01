@@ -1,3 +1,3 @@
-module github.com/bamgoo/mutex
+module github.com/infrago/mutex
 
 go 1.25.3
