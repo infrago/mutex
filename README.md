@@ -1,68 +1,55 @@
 # mutex
 
-`mutex` 是 infrago 的模块包。
+`mutex` 是 infrago 的**模块**。
 
-## 安装
+## 包定位
 
-```bash
-go get github.com/infrago/mutex@latest
-```
+- 类型：模块
+- 作用：分布式锁模块，负责锁获取/释放与并发互斥。
 
-## 最小接入
+## 主要功能
+
+- 对上提供统一模块接口
+- 对下通过驱动接口接入具体后端
+- 支持按配置切换驱动实现
+
+## 快速接入
 
 ```go
-package main
-
-import (
-    _ "github.com/infrago/mutex"
-    "github.com/infrago/infra"
-)
-
-func main() {
-    infra.Run()
-}
+import _ "github.com/infrago/mutex"
 ```
-
-## 配置示例
 
 ```toml
 [mutex]
 driver = "default"
 ```
 
-## 公开 API（摘自源码）
+## 驱动实现接口列表
 
-- `func (m *Module) LockOn(conn string, key string, expires ...time.Duration) error`
-- `func (m *Module) Lock(key string, expires ...time.Duration) error`
-- `func (m *Module) UnlockOn(conn, key string) error`
-- `func (m *Module) Unlock(key string) error`
-- `func (d *defaultDriver) Connect(inst *Instance) (Connection, error)`
-- `func (c *defaultConnect) Open() error`
-- `func (c *defaultConnect) Close() error`
-- `func (c *defaultConnect) Lock(key string, expire time.Duration) error`
-- `func (c *defaultConnect) Unlock(key string) error`
-- `func (r *hashRing) Locate(key string) string`
-- `func Key(args ...base.Any) string`
-- `func LockOn(conn string, args ...base.Any) (*locker, error)`
-- `func UnlockOn(conn string, args ...base.Any) error`
-- `func LockedOn(conn string, args ...base.Any) bool`
-- `func Lock(args ...base.Any) (*locker, error)`
-- `func Unlock(args ...base.Any) error`
-- `func Locked(args ...base.Any) bool`
-- `func (l *locker) Unlock() error`
-- `func (m *Module) Register(name string, value base.Any)`
-- `func (m *Module) RegisterDriver(name string, driver Driver)`
-- `func (m *Module) RegisterConfig(name string, cfg Config)`
-- `func (m *Module) RegisterConfigs(configs Configs)`
-- `func (m *Module) Config(global base.Map)`
-- `func (m *Module) Setup()`
-- `func (m *Module) Open()`
-- `func (m *Module) Start()`
-- `func (m *Module) Stop()`
-- `func (m *Module) Close()`
+以下接口由驱动实现（来自模块 `driver.go`）：
 
-## 排错
+### Driver
 
-- 模块未运行：确认空导入已存在
-- driver 无效：确认驱动包已引入
-- 配置不生效：检查配置段名是否为 `[mutex]`
+- `Connect(*Instance) (Connection, error)`
+
+### Connection
+
+- `Open() error`
+- `Close() error`
+- `Lock(key string, expires time.Duration) error`
+- `Unlock(key string) error`
+
+## 全局配置项（所有配置键）
+
+配置段：`[mutex]`
+
+- `driver`
+- `weight`
+- `prefix`
+- `expire`
+- `setting`
+
+## 说明
+
+- `setting` 一般用于向具体驱动透传专用参数
+- 多实例配置请参考模块源码中的 Config/configure 处理逻辑
