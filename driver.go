@@ -21,11 +21,40 @@ type (
 		Unlock(key string) error
 	}
 
+	Checker interface {
+		Locked(key string) (bool, error)
+	}
+
+	Refresher interface {
+		Refresh(key string, expires time.Duration) error
+	}
+
+	TokenConnection interface {
+		LockToken(key string, expires time.Duration) (string, error)
+		UnlockToken(key, token string) error
+	}
+
+	TokenRefresher interface {
+		RefreshToken(key, token string, expires time.Duration) error
+	}
+
+	CapabilityProvider interface {
+		Capabilities() Capability
+	}
+
+	Capability struct {
+		Check        bool
+		Refresh      bool
+		Token        bool
+		TokenRefresh bool
+	}
+
 	// Instance is the driver instance context.
 	Instance struct {
-		conn Connection
+		conn    Connection
 		Name    string
 		Config  Config
 		Setting base.Map
+		stats   mutexStats
 	}
 )
